@@ -1,0 +1,316 @@
+<title>Ma boutique en ligne pas à pas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout : une seule colonne large et aérée, gros texte, une étape = un bloc à cocher */
+:root{
+  --bg:#f3f6f7; --surface:#ffffff; --ink:#14262e; --muted:#4d6470;
+  --line:#d5e0e4; --brand:#0f5c6e; --brand-soft:#e1eef1; --sun:#f2a93b; --sun-soft:#fdf1dc;
+  --ok:#2f7d4f; --ok-soft:#e3f2e8;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",Verdana,system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1a1f; --surface:#16252c; --ink:#e7f0f2; --muted:#a3b8c0;
+  --line:#2a3d45; --brand:#6cc3d6; --brand-soft:#1b3640; --sun:#f5b956; --sun-soft:#3a2e18;
+  --ok:#74c995; --ok-soft:#183626; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1a1f; --surface:#16252c; --ink:#e7f0f2; --muted:#a3b8c0;
+  --line:#2a3d45; --brand:#6cc3d6; --brand-soft:#1b3640; --sun:#f5b956; --sun-soft:#3a2e18;
+  --ok:#74c995; --ok-soft:#183626; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:19px;line-height:1.6}
+.wrap{max-width:820px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,6vw,2.9rem);font-weight:800;color:var(--brand)}
+h2{font-size:1.65rem;font-weight:800}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--brand);font-weight:700;text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:3px;border-radius:6px}
+section{display:grid;gap:18px}
+.eyebrow{font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.lead{font-size:1.15rem;color:var(--muted)}
+.note{background:var(--sun-soft);border-left:5px solid var(--sun);padding:14px 18px;border-radius:0 10px 10px 0}
+nav.toc{display:flex;flex-wrap:wrap;gap:10px}
+nav.toc a{background:var(--surface);border:1px solid var(--line);padding:8px 14px;border-radius:99px;text-decoration:none;font-size:.95rem}
+/* comparatif */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:10px;align-content:start;min-width:0}
+.card.reco{border-color:var(--brand)}
+.badge{justify-self:start;font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--brand-soft);color:var(--brand)}
+.card .price{font-family:var(--display);font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums}
+.card .price small{font-family:var(--body);font-size:.9rem;font-weight:400;color:var(--muted)}
+.card ul{margin:0;padding-left:20px;display:grid;gap:4px;font-size:.95rem}
+.stars{color:var(--sun);letter-spacing:2px}
+.pick{margin-top:6px;font:inherit;font-weight:700;font-size:1rem;padding:12px;border-radius:10px;border:2px solid var(--brand);background:transparent;color:var(--brand);cursor:pointer}
+.pick[aria-pressed="true"]{background:var(--brand);color:var(--bg)}
+/* listes à cocher */
+.checks{display:grid;gap:10px}
+.chk{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer}
+.chk input{width:28px;height:28px;margin:2px 0 0;accent-color:var(--ok);cursor:pointer}
+.chk.done{background:var(--ok-soft);border-color:var(--ok)}
+.chk.done .t{text-decoration:line-through;text-decoration-color:var(--ok)}
+.chk .t{font-weight:700}
+.chk .d{color:var(--muted);font-size:.95rem;display:block;margin-top:2px}
+/* parcours */
+.switch{display:flex;flex-wrap:wrap;gap:8px}
+.switch button{font:inherit;font-weight:700;padding:10px 18px;border-radius:99px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.switch button[aria-pressed="true"]{border-color:var(--brand);background:var(--brand);color:var(--bg)}
+.progress{display:grid;gap:6px}
+.bar{height:14px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:s}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 18px 18px 18px;display:grid;grid-template-columns:auto 1fr;gap:16px;counter-increment:s}
+.step::before{content:counter(s);font-family:var(--display);font-weight:800;font-size:1.3rem;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand)}
+.step.done::before{content:"✓";background:var(--ok);color:var(--bg)}
+.step.done{border-color:var(--ok)}
+.step .body{display:grid;gap:8px;min-width:0}
+.step .time{font-size:.85rem;color:var(--muted)}
+.go{justify-self:start;display:inline-block;background:var(--sun);color:#1d1406;text-decoration:none;padding:10px 16px;border-radius:10px;font-weight:700;word-break:break-word}
+.step label{display:flex;gap:10px;align-items:center;font-weight:700;color:var(--ok);cursor:pointer;margin-top:4px}
+.step label input{width:24px;height:24px;accent-color:var(--ok)}
+/* budget */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;background:var(--surface);border-radius:12px;overflow:hidden;font-size:.97rem}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--brand-soft);color:var(--brand);font-weight:700}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+.total{font-family:var(--display);font-size:1.3rem;font-weight:800;color:var(--brand)}
+/* aide */
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.help div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:6px;min-width:0}
+.help p{font-size:.95rem;color:var(--muted)}
+footer{font-size:.85rem;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Guide pratique · octobre 2026</span>
+  <h1>Créer votre boutique en ligne, étape par étape</h1>
+  <p class="lead">Aucune connaissance en informatique n'est nécessaire. Suivez les étapes dans l'ordre, cliquez sur les boutons jaunes pour aller sur le bon site, et cochez chaque étape une fois faite. Vos coches restent enregistrées sur cet appareil.</p>
+  <nav class="toc" aria-label="Sommaire">
+    <a href="#choisir">1. Choisir</a><a href="#avant">2. Avant de commencer</a><a href="#budget">3. Budget</a><a href="#parcours">4. Créer la boutique</a><a href="#lancer">5. Avant d'ouvrir</a><a href="#aide">6. Se faire aider</a>
+  </nav>
+</header>
+
+<section id="choisir">
+  <span class="eyebrow">Étape 1</span>
+  <h2>Choisir l'outil qui va fabriquer votre boutique</h2>
+  <p>Ces trois services font tout le travail technique à votre place : hébergement, sécurité, paiement par carte. Vous payez un abonnement mensuel et vous remplissez votre boutique comme un formulaire.</p>
+  <div class="cards">
+    <article class="card reco" data-p="wizishop">
+      <span class="badge">Le plus accompagné</span>
+      <h3>WiziShop</h3>
+      <span class="stars" aria-label="Facilité 5 sur 5">★★★★★</span>
+      <div class="price">34,90 € <small>HT / mois sans engagement<br>24,90 € HT / mois si payé à l'année</small></div>
+      <ul>
+        <li>Entreprise française, tout en français</li>
+        <li>Des conseillers vous aident par téléphone et par chat, sans supplément</li>
+        <li>7 jours d'essai sans carte bancaire</li>
+        <li>2 % prélevés sur chaque vente (formule Smart)</li>
+      </ul>
+      <button class="pick" type="button" data-pick="wizishop" aria-pressed="false">Je choisis WiziShop</button>
+    </article>
+    <article class="card" data-p="wix">
+      <span class="badge">Le plus simple à manier</span>
+      <h3>Wix</h3>
+      <span class="stars" aria-label="Facilité 5 sur 5">★★★★★</span>
+      <div class="price">30 € <small>TTC / mois (forfait Essentiel, payé à l'année)<br>40,80 € pour le forfait Business</small></div>
+      <ul>
+        <li>On déplace les éléments à la souris, comme dans un traitement de texte</li>
+        <li>Création gratuite, on paie seulement pour encaisser des ventes</li>
+        <li>Aucune commission Wix sur les ventes</li>
+        <li>Aide surtout par écrit</li>
+      </ul>
+      <button class="pick" type="button" data-pick="wix" aria-pressed="false">Je choisis Wix</button>
+    </article>
+    <article class="card" data-p="shopify">
+      <span class="badge">Le plus connu</span>
+      <h3>Shopify</h3>
+      <span class="stars" aria-label="Facilité 4 sur 5">★★★★☆</span>
+      <div class="price">36 € <small>/ mois (forfait Basic)<br>27 € / mois si payé à l'année</small></div>
+      <ul>
+        <li>3 jours d'essai, puis 1 € par mois pendant 3 mois</li>
+        <li>Très complet, mais beaucoup d'options en anglais dans les extensions</li>
+        <li>Frais carte : 1,5 % + 0,25 € par vente</li>
+        <li>Idéal si la boutique doit beaucoup grandir</li>
+      </ul>
+      <button class="pick" type="button" data-pick="shopify" aria-pressed="false">Je choisis Shopify</button>
+    </article>
+  </div>
+  <p class="note"><strong>Notre conseil :</strong> si vous voulez quelqu'un au bout du fil, prenez <strong>WiziShop</strong>. Si vous voulez l'outil le plus facile à manipuler seul, prenez <strong>Wix</strong>. Shopify est excellent mais demande un peu plus d'aisance. Les trois proposent un essai gratuit : vous pouvez tester avant de payer.</p>
+</section>
+
+<section id="avant">
+  <span class="eyebrow">Étape 2</span>
+  <h2>Ce qu'il faut préparer avant de commencer</h2>
+  <p>Préparez ces éléments d'abord. La création ira ensuite beaucoup plus vite.</p>
+  <div class="checks" data-group="avant">
+    <label class="chk"><input type="checkbox" id="a1"><span><span class="t">Avoir un statut pour vendre</span><span class="d">Pour vendre régulièrement, il faut une entreprise. La micro-entreprise est la plus simple, gratuite, et se crée en ligne sur <a href="https://formalites.entreprises.gouv.fr" target="_blank" rel="noopener">formalites.entreprises.gouv.fr</a>. Vous recevez un numéro SIRET.</span></span></label>
+    <label class="chk"><input type="checkbox" id="a2"><span><span class="t">Une adresse e-mail que vous consultez souvent</span><span class="d">Toutes les commandes et messages des clients y arriveront.</span></span></label>
+    <label class="chk"><input type="checkbox" id="a3"><span><span class="t">Un compte bancaire (idéalement séparé)</span><span class="d">L'argent des ventes y sera versé. Gardez votre RIB à portée de main.</span></span></label>
+    <label class="chk"><input type="checkbox" id="a4"><span><span class="t">Une pièce d'identité scannée ou prise en photo</span><span class="d">Demandée pour activer les paiements par carte.</span></span></label>
+    <label class="chk"><input type="checkbox" id="a5"><span><span class="t">Le nom de votre boutique</span><span class="d">Court, facile à dire au téléphone. Vérifiez qu'il n'est pas déjà pris en le tapant dans Google.</span></span></label>
+    <label class="chk"><input type="checkbox" id="a6"><span><span class="t">La liste de vos produits</span><span class="d">Pour chacun : un nom, un prix, une description de 3 ou 4 lignes, le poids (pour la livraison). Un simple cahier suffit.</span></span></label>
+    <label class="chk"><input type="checkbox" id="a7"><span><span class="t">De belles photos de chaque produit</span><span class="d">Prises au téléphone, à la lumière du jour, sur un fond uni (un drap blanc fait très bien l'affaire).</span></span></label>
+    <label class="chk"><input type="checkbox" id="a8"><span><span class="t">Savoir comment vous allez expédier</span><span class="d">La Poste (Colissimo), Mondial Relay… Notez le prix d'envoi pour vos colis les plus courants.</span></span></label>
+  </div>
+</section>
+
+<section id="budget">
+  <span class="eyebrow">Étape 3</span>
+  <h2>Prévoir son budget</h2>
+  <p>Pas besoin d'investir beaucoup. Voici ce qu'il faut compter pour la première année avec une boutique simple.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Dépense</th><th>Combien</th><th>Obligatoire ?</th></tr></thead>
+    <tbody>
+      <tr><td>Abonnement à l'outil (WiziShop, Wix ou Shopify)</td><td class="n">25 à 40 € / mois</td><td>Oui</td></tr>
+      <tr><td>Nom de domaine (ex. : maboutique.fr)</td><td class="n">10 à 20 € / an</td><td>Conseillé. Souvent offert la 1re année chez Wix en paiement annuel.</td></tr>
+      <tr><td>Frais sur chaque vente par carte</td><td class="n">1,5 à 3 % par vente</td><td>Oui, pris automatiquement sur la vente</td></tr>
+      <tr><td>Création de la micro-entreprise</td><td class="n">0 €</td><td>Oui pour vendre régulièrement</td></tr>
+      <tr><td>Emballages et étiquettes</td><td class="n">30 à 80 € pour démarrer</td><td>Oui</td></tr>
+      <tr><td>Thème (apparence) payant</td><td class="n">0 € (les gratuits suffisent)</td><td>Non</td></tr>
+      <tr><td>Aide d'un professionnel pour tout installer</td><td class="n">300 à 1 500 €</td><td>Non, ce guide sert à s'en passer</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="total">Budget de départ réaliste : environ 400 à 600 € pour la première année.</p>
+  <p class="note">Attention aux sites qui proposent de « tout faire pour vous » pour des milliers d'euros. Pour une petite boutique, ce n'est pas nécessaire. Les prix ci-dessus changent régulièrement : vérifiez toujours la page « Tarifs » de l'outil choisi avant de payer.</p>
+</section>
+
+<section id="parcours">
+  <span class="eyebrow">Étape 4</span>
+  <h2>Créer la boutique, du premier clic à l'ouverture</h2>
+  <p>Choisissez votre outil ci-dessous : les étapes et les liens s'adaptent.</p>
+  <div class="switch" role="group" aria-label="Outil choisi">
+    <button type="button" data-tab="wizishop" aria-pressed="true">WiziShop</button>
+    <button type="button" data-tab="wix" aria-pressed="false">Wix</button>
+    <button type="button" data-tab="shopify" aria-pressed="false">Shopify</button>
+  </div>
+  <div class="progress"><span id="ptext" style="font-weight:700">0 étape faite</span><div class="bar"><span id="pbar"></span></div></div>
+  <ol class="steps" id="steps"></ol>
+</section>
+
+<section id="lancer">
+  <span class="eyebrow">Étape 5</span>
+  <h2>Les vérifications avant d'ouvrir au public</h2>
+  <div class="checks" data-group="lancer">
+    <label class="chk"><input type="checkbox" id="l1"><span><span class="t">Les pages obligatoires sont en ligne</span><span class="d">Mentions légales, Conditions générales de vente (CGV), politique de confidentialité, droit de rétractation de 14 jours. Les trois outils proposent des modèles. Pour vérifier : <a href="https://entreprendre.service-public.fr" target="_blank" rel="noopener">entreprendre.service-public.fr</a>, cherchez « mentions obligatoires site internet ».</span></span></label>
+    <label class="chk"><input type="checkbox" id="l2"><span><span class="t">Une commande test passée de bout en bout</span><span class="d">Commandez vous-même un produit pour voir ce que voit le client et ce que vous recevez.</span></span></label>
+    <label class="chk"><input type="checkbox" id="l3"><span><span class="t">Les frais de livraison sont justes</span><span class="d">Essayez avec un petit et un gros colis.</span></span></label>
+    <label class="chk"><input type="checkbox" id="l4"><span><span class="t">La boutique s'affiche bien sur un téléphone</span><span class="d">La majorité des clients achètent depuis leur téléphone.</span></span></label>
+    <label class="chk"><input type="checkbox" id="l5"><span><span class="t">Vos coordonnées sont visibles</span><span class="d">Adresse e-mail de contact et, si possible, un numéro de téléphone. Cela rassure les acheteurs.</span></span></label>
+    <label class="chk"><input type="checkbox" id="l6"><span><span class="t">Une personne de confiance a relu la boutique</span><span class="d">Fautes, prix, photos : un regard extérieur voit toujours quelque chose.</span></span></label>
+  </div>
+</section>
+
+<section id="aide">
+  <span class="eyebrow">Étape 6</span>
+  <h2>Où se faire aider gratuitement</h2>
+  <div class="help">
+    <div><h3>Un conseiller près de chez vous</h3><p>Les Conseillers numériques France Services aident gratuitement, en personne, souvent en mairie ou en médiathèque.</p><a href="https://www.conseiller-numerique.gouv.fr" target="_blank" rel="noopener">Trouver un conseiller</a></div>
+    <div><h3>Francenum (site du gouvernement)</h3><p>Guides simples pour les petits commerces qui se lancent sur internet, et annuaire d'accompagnants.</p><a href="https://www.francenum.gouv.fr" target="_blank" rel="noopener">francenum.gouv.fr</a></div>
+    <div><h3>Aide WiziShop</h3><p>Conseillers par téléphone et chat, plus des articles et tutoriels en français.</p><a href="https://www.wizishop.fr/blog" target="_blank" rel="noopener">Tutoriels WiziShop</a></div>
+    <div><h3>Aide Wix</h3><p>Centre d'aide en français avec des vidéos courtes. Tapez votre question en toutes lettres.</p><a href="https://support.wix.com/fr" target="_blank" rel="noopener">support.wix.com/fr</a></div>
+    <div><h3>Aide et forum Shopify</h3><p>Centre d'aide en français et forum où d'autres commerçants répondent aux questions.</p><a href="https://help.shopify.com/fr" target="_blank" rel="noopener">help.shopify.com/fr</a><a href="https://community.shopify.com" target="_blank" rel="noopener">Forum Shopify</a></div>
+    <div><h3>Forum WebRankInfo</h3><p>Grand forum français sur les sites internet, avec une rubrique e-commerce.</p><a href="https://forum.webrankinfo.com" target="_blank" rel="noopener">forum.webrankinfo.com</a></div>
+  </div>
+  <p class="note"><strong>Astuce :</strong> sur YouTube, tapez « créer boutique Wix débutant » (ou WiziShop, ou Shopify). Les vidéos permettent de voir chaque clic à l'écran, et on peut mettre sur pause.</p>
+</section>
+
+<footer>Prix relevés en octobre 2026 sur les pages officielles et des comparatifs récents. Ils peuvent changer : vérifiez avant de vous abonner.</footer>
+</div>
+
+<script>
+const S = {
+  wizishop: [
+    {t:"Ouvrir le site de WiziShop", d:"Cliquez sur le bouton jaune. Une nouvelle page s'ouvre.", l:"https://www.wizishop.fr", lt:"Aller sur wizishop.fr", m:"1 min"},
+    {t:"Lancer l'essai gratuit", d:"Cliquez sur « Essai gratuit » ou « Créer ma boutique ». Entrez votre adresse e-mail et choisissez un mot de passe. Pas de carte bancaire demandée.", m:"5 min"},
+    {t:"Répondre aux questions de bienvenue", d:"Le site vous demande ce que vous vendez et le nom de la boutique. Répondez simplement, tout pourra être modifié après.", m:"5 min"},
+    {t:"Prendre rendez-vous avec un Business Coach", d:"C'est le gros avantage de WiziShop : un conseiller vous guide par téléphone ou par chat. Demandez-le dès le premier jour.", m:"10 min"},
+    {t:"Choisir l'apparence (le thème)", d:"Dans le menu, ouvrez la partie « Design » et choisissez un modèle. Changez le logo, les couleurs et la photo d'accueil.", m:"30 min"},
+    {t:"Ajouter vos produits un par un", d:"Menu « Catalogue » puis « Ajouter un produit ». Remplissez : nom, prix, description, photos, poids, quantité en stock.", m:"10 min par produit"},
+    {t:"Régler la livraison", d:"Menu « Livraison » : ajoutez Colissimo ou Mondial Relay et vos tarifs d'envoi.", m:"20 min"},
+    {t:"Activer les paiements", d:"Menu « Paiement » : suivez les instructions. On vous demandera votre SIRET, votre RIB et votre pièce d'identité.", m:"20 min"},
+    {t:"Ajouter les pages légales", d:"Mentions légales, CGV, confidentialité : utilisez les modèles proposés et complétez avec vos informations.", m:"30 min"},
+    {t:"Choisir votre abonnement", d:"Avant la fin des 7 jours, choisissez la formule Smart (mensuelle sans engagement pour commencer).", l:"https://www.wizishop.fr/tarifs", lt:"Voir les tarifs WiziShop", m:"5 min"},
+    {t:"Brancher votre nom de domaine", d:"Achetez « maboutique.fr » directement depuis WiziShop : c'est le plus simple, tout se règle automatiquement.", m:"10 min"},
+    {t:"Ouvrir la boutique", d:"Faites les vérifications de l'étape 5, puis cliquez sur « Mettre en ligne ». Votre boutique est ouverte !", l:"#lancer", lt:"Voir les vérifications", m:"5 min"}
+  ],
+  wix: [
+    {t:"Ouvrir le site de Wix", d:"Cliquez sur le bouton jaune. Une nouvelle page s'ouvre.", l:"https://fr.wix.com/ecommerce/website", lt:"Aller sur Wix eCommerce", m:"1 min"},
+    {t:"Créer votre compte", d:"Cliquez sur « Commencer ». Entrez votre e-mail et un mot de passe, ou connectez-vous avec un compte Google.", m:"5 min"},
+    {t:"Dire que vous voulez une boutique", d:"Wix vous demande quel type de site vous voulez : choisissez « Boutique en ligne ». Indiquez le nom et ce que vous vendez.", m:"5 min"},
+    {t:"Laisser Wix créer une première version", d:"Wix propose de créer le site pour vous à partir de vos réponses. Acceptez : c'est plus facile de modifier que de partir de zéro.", m:"10 min"},
+    {t:"Personnaliser l'apparence", d:"Cliquez sur un texte ou une image pour la changer. Remplacez le logo, la photo d'accueil et les couleurs.", m:"30 à 60 min"},
+    {t:"Ajouter vos produits", d:"Dans le tableau de bord, menu « Catalogue » puis « Produits » et « + Nouveau produit ». Nom, prix, description, photos, poids.", m:"10 min par produit"},
+    {t:"Régler la livraison", d:"Menu « Paramètres » puis « Livraison et retrait ». Ajoutez vos tarifs Colissimo ou Mondial Relay.", m:"20 min"},
+    {t:"Choisir un forfait payant", d:"Pour encaisser des paiements, il faut un forfait. Le forfait « Essentiel » suffit pour démarrer. Le paiement à l'année inclut souvent le nom de domaine.", l:"https://fr.wix.com/plans", lt:"Voir les forfaits Wix", m:"10 min"},
+    {t:"Activer les paiements", d:"Menu « Paramètres » puis « Accepter les paiements ». Activez Wix Payments : SIRET, RIB et pièce d'identité demandés.", m:"20 min"},
+    {t:"Ajouter les pages légales", d:"Ajoutez une page « Mentions légales » et une page « CGV » à partir des modèles proposés.", m:"30 min"},
+    {t:"Publier la boutique", d:"Faites les vérifications de l'étape 5, puis cliquez sur « Publier » en haut à droite. Votre boutique est en ligne !", l:"#lancer", lt:"Voir les vérifications", m:"5 min"}
+  ],
+  shopify: [
+    {t:"Ouvrir le site de Shopify", d:"Cliquez sur le bouton jaune. Une nouvelle page s'ouvre.", l:"https://www.shopify.com/fr", lt:"Aller sur shopify.com/fr", m:"1 min"},
+    {t:"Démarrer l'essai gratuit", d:"Cliquez sur « Commencer l'essai gratuit ». Entrez votre e-mail et un mot de passe. Répondez aux questions (ce que vous vendez, où vous êtes).", m:"10 min"},
+    {t:"Prolonger l'essai à 1 €", d:"L'essai gratuit ne dure que 3 jours. Choisissez tout de suite le forfait « Basic » : vous payez alors 1 € par mois pendant 3 mois, le temps de tout préparer sans stress.", l:"https://www.shopify.com/fr/tarifs", lt:"Voir les tarifs Shopify", m:"10 min"},
+    {t:"Choisir l'apparence (le thème)", d:"Menu « Boutique en ligne » puis « Thèmes ». Prenez un thème gratuit (par exemple « Dawn ») et cliquez sur « Personnaliser » pour changer logo, couleurs et photos.", m:"30 à 60 min"},
+    {t:"Ajouter vos produits", d:"Menu « Produits » puis « Ajouter un produit ». Nom, description, photos, prix, stock, poids.", m:"10 min par produit"},
+    {t:"Régler la livraison", d:"Menu « Paramètres » (roue en bas à gauche) puis « Expédition et livraison ». Créez vos tarifs.", m:"20 min"},
+    {t:"Activer Shopify Payments", d:"Menu « Paramètres » puis « Paiements ». Activez Shopify Payments : SIRET, RIB et pièce d'identité demandés.", m:"20 min"},
+    {t:"Ajouter les pages légales", d:"Menu « Paramètres » puis « Politiques » : Shopify génère des modèles (remboursement, confidentialité, CGV). Relisez et complétez.", m:"30 min"},
+    {t:"Acheter le nom de domaine", d:"Menu « Paramètres » puis « Domaines » puis « Acheter un domaine ». Tout se règle automatiquement.", m:"10 min"},
+    {t:"Retirer le mot de passe et ouvrir", d:"Par défaut, la boutique est cachée par un mot de passe. Faites les vérifications de l'étape 5, puis dans « Boutique en ligne » > « Préférences », retirez le mot de passe. C'est ouvert !", l:"#lancer", lt:"Voir les vérifications", m:"5 min"}
+  ]
+};
+const store = {
+  get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let state = store.get("boutique-guide") || {tab:"wizishop", done:{}, checks:{}};
+const save = () => store.set("boutique-guide", state);
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function render(){
+  const list = S[state.tab];
+  const done = state.done[state.tab] || [];
+  document.getElementById("steps").innerHTML = list.map((s,i)=>{
+    const ok = done.includes(i);
+    const ext = s.l && !s.l.startsWith("#") ? ' target="_blank" rel="noopener"' : '';
+    return `<li class="step${ok?" done":""}"><div class="body">
+      <h3>${esc(s.t)}</h3><span class="time">Temps : ${esc(s.m)}</span><p>${esc(s.d)}</p>
+      ${s.l?`<a class="go" href="${s.l}"${ext}>${esc(s.lt)} →</a>`:""}
+      <label><input type="checkbox" id="st-${state.tab}-${i}" data-i="${i}" ${ok?"checked":""}> C'est fait</label>
+    </div></li>`;
+  }).join("");
+  const n = done.length;
+  document.getElementById("ptext").textContent = `${n} étape${n>1?"s":""} faite${n>1?"s":""} sur ${list.length}` + (n===list.length?" : bravo, votre boutique est prête !":"");
+  document.getElementById("pbar").style.width = (n/list.length*100)+"%";
+  document.querySelectorAll("[data-tab]").forEach(b=>b.setAttribute("aria-pressed", b.dataset.tab===state.tab));
+  document.querySelectorAll("[data-pick]").forEach(b=>{
+    const on = b.dataset.pick===state.tab && state.picked;
+    b.setAttribute("aria-pressed", !!on);
+    b.textContent = on ? "✓ Choisi" : "Je choisis " + b.closest(".card").querySelector("h3").textContent;
+  });
+}
+document.getElementById("steps").addEventListener("change", e=>{
+  const i = +e.target.dataset.i; const arr = state.done[state.tab] || [];
+  state.done[state.tab] = e.target.checked ? [...new Set([...arr,i])] : arr.filter(x=>x!==i);
+  save(); render();
+});
+document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{state.tab=b.dataset.tab;save();render();}));
+document.querySelectorAll("[data-pick]").forEach(b=>b.addEventListener("click",()=>{
+  state.tab=b.dataset.pick; state.picked=true; save(); render();
+  document.getElementById("parcours").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+}));
+document.querySelectorAll(".chk input").forEach(inp=>{
+  inp.checked = !!state.checks[inp.id];
+  inp.closest(".chk").classList.toggle("done", inp.checked);
+  inp.addEventListener("change",()=>{state.checks[inp.id]=inp.checked; inp.closest(".chk").classList.toggle("done", inp.checked); save();});
+});
+render();
+</script>
